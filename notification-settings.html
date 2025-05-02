@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Settings - Universal Resource Hub</title>
+    <link rel="icon" type="image/svg+xml" href="/public/images/favicon.svg">
+    <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="public/js/auth.js"></script>
+    <script src="public/js/notifications.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Notification Settings</h1>
+        <form id="notification-settings-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="push-notifications">Push Notifications</label>
+                <input type="checkbox" id="push-notifications" name="push-notifications">
+            </div>
+            <div class="form-group">
+                <label for="sms-notifications">SMS Notifications</label>
+                <input type="checkbox" id="sms-notifications" name="sms-notifications">
+            </div>
+            <div class="form-group">
+                <label for="email-notifications">Email Notifications</label>
+                <input type="checkbox" id="email-notifications" name="email-notifications">
+            </div>
+            <div class="form-group">
+                <label for="post-notifications">Post Notifications</label>
+                <input type="checkbox" id="post-notifications" name="post-notifications">
+            </div>
+            <button type="submit">Save Settings</button>
+        </form>
+    </div>
+</body>
+</html> 

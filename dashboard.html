@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Universal Resource Hub</title>
+    <link rel="icon" type="image/svg+xml" href="/public/images/favicon.svg">
+    <link rel="stylesheet" href="public/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="public/js/config.js?v=1.0.2"></script>
+    <script src="public/js/auth.js?v=1.0.2"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">U</div>
+                <span class="logo-text">Universal Resource Hub</span>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="categories.html">Categories</a></li>
+                <li><a href="resources.html">Resources</a></li>
+            </ul>
+        </nav>
+        <div class="nav-icons">
+            <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+            <button id="notifications"><i class="fas fa-bell"></i></button>
+            <button onclick="signOut()" class="login-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <div class="dashboard-container">
+            <aside class="dashboard-sidebar">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <img src="https://via.placeholder.com/100" alt="User Avatar" id="user-avatar">
+                    </div>
+                    <h2 id="user-name">Loading...</h2>
+                    <p id="user-email">Loading...</p>
+                </div>
+                <ul class="dashboard-menu">
+                    <li><a href="#" id="overview-tab" class="active" data-tab="overview"><i class="fas fa-chart-line"></i> Overview</a></li>
+                    <li><a href="#" id="saved-tab" data-tab="saved-resources"><i class="fas fa-bookmark"></i> Saved Resources</a></li>
+                    <li><a href="#" id="history-tab" data-tab="history"><i class="fas fa-history"></i> History</a></li>
+                    <li><a href="notification-settings.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                    <li><a href="#" id="settings-tab" data-tab="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </aside>
+
+            <div class="dashboard-content">
+                <!-- Overview Section -->
+                <section id="overview" class="dashboard-section active">
+                    <h1>Dashboard Overview</h1>
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <h3 id="saved-resources-count">0</h3>
+                            <p>Saved Resources</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="categories-followed-count">0</h3>
+                            <p>Categories Followed</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="resources-viewed-count">0</h3>
+                            <p>Resources Viewed</p>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h2>Recent Activity</h2>
+                        <div id="activity-list">
+                            <div class="activity-item">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <div>
+                                    <h4>Loading activities...</h4>
+                                    <p>Please wait</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Saved Resources Section -->
+                <section id="saved-resources" class="dashboard-section">
+                    <h1>Your Saved Resources</h1>
+                    <div class="search-and-filter">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="saved-search" placeholder="Search your saved resources">
+                        </div>
+                        <div class="filter-dropdown">
+                            <select id="saved-sort">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="a-z">A-Z</option>
+                                <option value="z-a">Z-A</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="resources-grid" id="saved-resources-grid">
+                        <div class="loading-indicator">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading your saved resources...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- History Section -->
+                <section id="history" class="dashboard-section">
+                    <h1>Browsing History</h1>
+                    <p>Coming soon! Your browsing history will be shown here.</p>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="dashboard-section">
+                    <h1>Account Settings</h1>
+                    <p>Coming soon! You'll be able to manage your account settings here.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="logo">
+                <div class="logo-icon">U</div>
+                Universal Resource Hub
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <div class="contact-info">
+                <p>Email: contact@urh.com</p>
+                <p>Phone: (555) 123-4567</p>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 Universal Resource Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // URL validation function
+        function isValidUrl(url) {
+            try {
+                const urlObj = new URL(url);
+                return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+            } catch (e) {
+                console.error('URL validation error:', e);
+                return false;
+            }
+        }
+
+        // Toast notification function
+        function showNotification(message, type = 'error', duration = 5000) {
+            const toast = document.createElement('div');
+            toast.className = `notification ${type}`;
+            toast.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+                <button class="close-btn"><i class="fas fa-times"></i></button>
+            `;
+            document.body.appendChild(toast);
+            
+            // Add close button functionality
+            toast.querySelector('.close-btn').addEventListener('click', () => toast.remove());
+            
+            // Auto-remove after duration (if provided)
+            if (duration) setTimeout(() => {
+                if (document.body.contains(toast)) toast.remove();
+            }, duration);
+            
+            return toast;
+        }
+        
+        // Tab navigation
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.dashboard-menu a[data-tab]');
+            const sections = document.querySelectorAll('.dashboard-section');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs and sections
+                    tabs.forEach(t => t.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Show corresponding section
+                    const targetSection = document.getElementById(tab.dataset.tab);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                        
+                        // If saved resources tab is clicked, always load saved resources
+                        if (tab.dataset.tab === 'saved-resources') {
+                            console.log('Saved resources tab clicked - loading resources');
+                            loadSavedResources();
+                        }
+                    }
+                });
+            });
+            
+            // Manually trigger click on the initial active tab (Overview by default)
+            const initialActiveTab = document.querySelector('.dashboard-menu a.active');
+            if (initialActiveTab) {
+                console.log('Initial tab is:', initialActiveTab.dataset.tab);
+            }
+        }
+        
+        // Load saved resources
+        async function loadSavedResources() {
+            const user = await getCurrentUser();
+            if (!user) return;
+            
+            const gridElement = document.getElementById('saved-resources-grid');
+            
+            try {
+                console.log('Loading saved resources for user:', user.id);
+                gridElement.innerHTML = '<div class="loading-indicator"><i class="fas fa-spinner fa-spin"></i><p>Loading your saved resources...</p></div>';
+                
+                // Fetch saved resources from API
+                const baseUrl = window.appConfig?.apiUrl || '';
+                console.log('Using API URL:', baseUrl);
+                
+                let apiUrl;
+                if (baseUrl.includes('/.netlify/functions')) {
+                    // In production with Netlify Functions
+                    apiUrl = `${baseUrl}/saved-resources?user_id=${user.id}`;
+                    console.log('Using Netlify function path:', apiUrl);
+                } else {
+                    // In development with Express server
+                    apiUrl = `${baseUrl}/api/user/${user.id}/saved-resources`;
+                    console.log('Using Express server path:', apiUrl);
+                }
+                
+                console.log('Fetching saved resources from:', apiUrl);
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const savedResources = await response.json();
+                console.log('Saved resources data:', savedResources);
+                
+                // Update count in stats
+                document.getElementById('saved-resources-count').textContent = savedResources.length;
+                
+                // Display saved resources
+                if (savedResources.length === 0) {
+                    console.log('No saved resources found');
+                    gridElement.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-bookmark" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+                            <h3>No saved resources yet</h3>
+                            <p>Resources you save will appear here.</p>
+                            <a href="index.html" class="primary-btn" style="display: inline-block; margin-top: 1rem;">
+                                <i class="fas fa-search"></i> Browse Resources
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Render resources
+                gridElement.innerHTML = '';
+                
+                // Apply sorting
+                const sortSelect = document.getElementById('saved-sort');
+                sortAndRenderResources(savedResources, sortSelect.value);
+                
+                // Add event listener for sort change
+                sortSelect.addEventListener('change', () => {
+                    sortAndRenderResources(savedResources, sortSelect.value);
+                });
+                
+                // Add event listener for search
+                const searchInput = document.getElementById('saved-search');
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase().trim();
+                    
+                    if (!searchTerm) {
+                        sortAndRenderResources(savedResources, sortSelect.value);
+                        return;
+                    }
+                    
+                    const filteredResources = savedResources.filter(resource => {
+                        return (
+                            resource.title?.toLowerCase().includes(searchTerm) ||
+                            resource.description?.toLowerCase().includes(searchTerm) ||
+                            resource.source?.toLowerCase().includes(searchTerm) ||
+                            resource.categories?.name?.toLowerCase().includes(searchTerm)
+                        );
+                    });
+                    
+                    renderSavedResources(filteredResources);
+                });
+                
+            } catch (error) {
+                console.error('Error loading saved resources:', error);
+                gridElement.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e53e3e; margin-bottom: 1rem;"></i>
+                        <h3>Error loading saved resources</h3>
+                        <p>${error.message}</p>
+                        <button id="retry-saved" class="primary-btn" style="margin-top: 1rem;">
+                            <i class="fas fa-redo"></i> Retry
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('retry-saved')?.addEventListener('click', loadSavedResources);
+            }
+        }
+        
+        // Sort and render resources
+        function sortAndRenderResources(resources, sortMethod) {
+            let sortedResources = [...resources];
+            
+            switch (sortMethod) {
+                case 'newest':
+                    sortedResources.sort((a, b) => new Date(b.saved_at) - new Date(a.saved_at));
+                    break;
+                case 'oldest':
+                    sortedResources.sort((a, b) => new Date(a.saved_at) - new Date(b.saved_at));
+                    break;
+                case 'a-z':
+                    sortedResources.sort((a, b) => a.title?.localeCompare(b.title || ''));
+                    break;
+                case 'z-a':
+                    sortedResources.sort((a, b) => b.title?.localeCompare(a.title || ''));
+                    break;
+            }
+            
+            renderSavedResources(sortedResources);
+        }
+        
+        // Render saved resources to the grid
+        function renderSavedResources(resources) {
+            const gridElement = document.getElementById('saved-resources-grid');
+            gridElement.innerHTML = '';
+            
+            console.log('Rendering saved resources:', resources);
+            
+            resources.forEach(resource => {
+                try {
+                    console.log('Processing resource:', resource);
+                    
+                    // Create card element
+                    const card = document.createElement('div');
+                    card.className = 'resource-card';
+                    
+                    // Safely get resource properties with fallbacks
+                    const title = resource.title || 'Untitled Resource';
+                    const description = resource.description || 'No description available';
+                    const imageUrl = resource.image_url || 'https://via.placeholder.com/400x200?text=Resource';
+                    const url = resource.url || '#';
+                    const rating = resource.rating || '4.5';
+                    const source = resource.source || 'Unknown Source';
+                    const categoryName = resource.categories?.name || 'Resource';
+                    
+                    // Important: Get the correct IDs
+                    const savedId = resource.saved_id || resource.id;
+                    const resourceId = resource.resource_id || resource.id;
+                    
+                    // Log IDs for debugging
+                    console.log(`Resource: ${title}, saved_id: ${savedId}, resource_id: ${resourceId}`);
+                    
+                    // Format the date
+                    const savedAt = resource.saved_at ? new Date(resource.saved_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    }) : 'Recently saved';
+                    
+                    // Build card HTML
+                    card.innerHTML = `
+                        <div class="resource-image">
+                            <img src="${imageUrl}" alt="${title}" onerror="this.src='https://via.placeholder.com/400x200?text=Error'; this.onerror=null;">
+                            <div class="resource-tags">
+                                <span class="tag">${categoryName}</span>
+                            </div>
+                        </div>
+                        <div class="resource-content">
+                            <h3>${title}</h3>
+                            <p>${description}</p>
+                            <div class="resource-meta">
+                                <div class="rating">
+                                    <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                    <span>${rating}</span>
+                                </div>
+                                <div class="source">
+                                    <p>Source: ${source}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="resource-footer">
+                            <div class="post-date">
+                                <i class="fas fa-bookmark" style="color: var(--accent-color);"></i>
+                                <span>Saved: ${savedAt}</span>
+                            </div>
+                            <div class="resource-actions">
+                                <button class="unsave-btn" title="Remove from saved" data-resource-id="${resourceId}" data-saved-id="${savedId}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="access-btn" data-url="${url}">
+                                    <i class="fas fa-external-link-alt"></i> Access Resource
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    gridElement.appendChild(card);
+                    
+                    // Add access button event handler
+                    const accessBtn = card.querySelector('.access-btn');
+                    if (accessBtn) {
+                        accessBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            handleResourceAccess(accessBtn);
+                        });
+                    }
+                    
+                    // Add unsave button event handler
+                    const unsaveBtn = card.querySelector('.unsave-btn');
+                    if (unsaveBtn) {
+                        unsaveBtn.addEventListener('click', async (e) => {
+                            e.preventDefault();
+                            
+                            try {
+                                const user = await getCurrentUser();
+                                if (!user) return;
+                                
+                                const resourceId = unsaveBtn.dataset.resourceId;
+                                console.log('Unsaving resource ID:', resourceId, 'with saved ID:', unsaveBtn.dataset.savedId);
+                                
+                                // Show loading state
+                                unsaveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                                unsaveBtn.disabled = true;
+                                
+                                // Unsave the resource
+                                const baseUrl = window.appConfig?.apiUrl || '';
+                                
+                                let unsaveUrl;
+                                if (baseUrl.includes('/.netlify/functions')) {
+                                    // In production with Netlify Functions
+                                    unsaveUrl = `${baseUrl}/saved-resources?user_id=${user.id}&resource_id=${resourceId}`;
+                                    console.log('Using Netlify function for unsave:', unsaveUrl);
+                                } else {
+                                    // In development with Express server
+                                    unsaveUrl = `${baseUrl}/api/user/saved-resources?user_id=${user.id}&resource_id=${resourceId}`;
+                                    console.log('Using Express server for unsave:', unsaveUrl);
+                                }
+                                
+                                console.log('DELETE request to:', unsaveUrl);
+                                const response = await fetch(unsaveUrl, {
+                                    method: 'DELETE',
+                                });
+                                
+                                console.log('Unsave response status:', response.status);
+                                
+                                if (!response.ok) {
+                                    const errorData = await response.json();
+                                    console.error('Error unsaving resource:', errorData);
+                                    throw new Error('Failed to remove resource from saved items');
+                                }
+                                
+                                // Remove the card with animation
+                                card.style.opacity = '0';
+                                card.style.transform = 'scale(0.9)';
+                                
+                                setTimeout(() => {
+                                    card.remove();
+                                    
+                                    // Update count
+                                    const count = document.getElementById('saved-resources-count');
+                                    count.textContent = parseInt(count.textContent) - 1;
+                                    
+                                    // Check if grid is empty
+                                    if (gridElement.children.length === 0) {
+                                        gridElement.innerHTML = `
+                                            <div class="empty-state">
+                                                <i class="fas fa-bookmark" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+                                                <h3>No saved resources</h3>
+                                                <p>Resources you save will appear here.</p>
+                                                <a href="index.html" class="primary-btn" style="display: inline-block; margin-top: 1rem;">
+                                                    <i class="fas fa-search"></i> Browse Resources
+                                                </a>
+                                            </div>
+                                        `;
+                                    }
+                                }, 300);
+                                
+                                showNotification('Resource removed from saved items', 'success', 2000);
+                                
+                            } catch (error) {
+                                console.error('Error removing resource from saved items:', error);
+                                showNotification(error.message, 'error');
+                                unsaveBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                                unsaveBtn.disabled = false;
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error rendering resource card:', error);
+                }
+            });
+        }
+        
+        // Handle resource access
+        function handleResourceAccess(accessBtn) {
+            // Get URL from button data attribute
+            const url = accessBtn.dataset.url;
+            
+            // Validate URL
+            if (!url || url === '#' || !isValidUrl(url)) {
+                showNotification('Resource URL is invalid or unavailable');
+                return;
+            }
+            
+            // Show loading state
+            const originalText = accessBtn.innerHTML;
+            accessBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening...';
+            accessBtn.disabled = true;
+            
+            try {
+                // Attempt to open URL
+                const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+                
+                // Handle popup blockers
+                if (newWindow === null) {
+                    throw new Error('popup-blocked');
+                }
+                
+                showNotification('Resource opened successfully', 'success', 3000);
+            } catch (error) {
+                let message = 'Error accessing resource';
+                
+                if (error.message === 'popup-blocked') {
+                    message = 'Please allow popups to access resources';
+                }
+                
+                showNotification(message, 'error');
+            } finally {
+                // Reset button state after delay
+                setTimeout(() => {
+                    accessBtn.innerHTML = originalText;
+                    accessBtn.disabled = false;
+                }, 1000);
+            }
+        }
+
+        // Check if user is authenticated
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                console.log('Dashboard loaded - checking authentication');
+                const user = await getCurrentUser();
+                
+                if (!user) {
+                    console.warn('No authenticated user found, redirecting to login');
+                    window.location.href = '/login.html?redirect=dashboard.html';
+                    return;
+                }
+                
+                console.log('User authenticated:', user.id);
+
+                // Update user profile
+                document.getElementById('user-name').textContent = user.user_metadata?.full_name || 'User';
+                document.getElementById('user-email').textContent = user.email;
+                
+                // Set up tab navigation first
+                console.log('Setting up dashboard tabs');
+                setupTabs();
+                
+                // Manually check if the saved-resources tab is active
+                const savedTab = document.getElementById('saved-tab');
+                if (savedTab && savedTab.classList.contains('active')) {
+                    console.log('Saved resources tab is active on load');
+                    loadSavedResources();
+                }
+
+                // Load user statistics
+                try {
+                    const { data: stats, error } = await supabase
+                        .from('user_statistics')
+                        .select('saved_resources, categories_followed, resources_viewed')
+                        .eq('user_id', user.id)
+                        .single();
+
+                    if (error && error.code !== 'PGRST116') throw error;
+
+                    if (stats) {
+                        document.getElementById('saved-resources-count').textContent = stats.saved_resources;
+                        document.getElementById('categories-followed-count').textContent = stats.categories_followed;
+                        document.getElementById('resources-viewed-count').textContent = stats.resources_viewed;
+                    }
+                } catch (error) {
+                    console.error('Error loading statistics:', error);
+                }
+
+                // Load recent activities
+                try {
+                    const { data: activities, error } = await supabase
+                        .from('user_activities')
+                        .select('*')
+                        .eq('user_id', user.id)
+                        .order('created_at', { ascending: false })
+                        .limit(5);
+
+                    if (error) throw error;
+
+                    const activityList = document.getElementById('activity-list');
+                    activityList.innerHTML = '';
+
+                    if (activities && activities.length > 0) {
+                        activities.forEach(activity => {
+                            activityList.innerHTML += `
+                                <div class="activity-item">
+                                    <i class="fas ${getActivityIcon(activity.type)}"></i>
+                                    <div>
+                                        <h4>${activity.title}</h4>
+                                        <p>${activity.description} - ${formatDate(activity.created_at)}</p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        activityList.innerHTML = `
+                            <div class="activity-item">
+                                <i class="fas fa-info-circle"></i>
+                                <div>
+                                    <h4>No recent activity</h4>
+                                    <p>Start exploring resources to see your activity here!</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading activities:', error);
+                }
+            } catch (error) {
+                console.error('Error checking authentication:', error);
+            }
+        });
+
+        // Helper function to get activity icon
+        function getActivityIcon(type) {
+            const icons = {
+                'save': 'fa-bookmark',
+                'view': 'fa-eye',
+                'notification': 'fa-bell',
+                'update': 'fa-pencil-alt'
+            };
+            return icons[type] || 'fa-circle';
+        }
+
+        // Helper function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return 'just now';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)} minutes ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)} hours ago`;
+            if (diff < 2592000000) return `${Math.floor(diff / 86400000)} days ago`;
+            
+            return date.toLocaleDateString();
+        }
+    </script>
+</body>
+</html> 

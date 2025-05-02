@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Resources - Universal Resource Hub</title>
+    <link rel="icon" type="image/svg+xml" href="/public/images/favicon.svg">
+    <link rel="stylesheet" href="/public/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="/public/js/auth.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <div class="logo">
+                <a href="/">
+                    <span class="logo-icon">U</span>
+                    <span class="logo-text">Universal Resource Hub</span>
+                </a>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/#categories" class="active">Categories</a></li>
+                <li><a href="/#resources">Resources</a></li>
+            </ul>
+        </nav>
+        <div class="nav-icons">
+            <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+            <button id="notifications"><i class="fas fa-bell"></i></button>
+            <a href="/login.html" class="login-btn" id="loginBtn">Login / Sign Up</a>
+            <a href="/dashboard.html" class="dashboard-btn" id="dashboardBtn" style="display: none;">
+                <i class="fas fa-user-circle"></i> Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section class="category-header">
+            <div class="container" id="category-info">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading category...</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="category-resources">
+            <div class="container">
+                <div class="filter-container">
+                    <div class="filter-left">
+                        <button class="filter-icon">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                        <div class="sort-options">
+                            <button class="filter-btn active" data-sort="newest">Newest</button>
+                            <button class="filter-btn" data-sort="popular">Most Popular</button>
+                            <button class="filter-btn" data-sort="rating">Highest Rated</button>
+                        </div>
+                    </div>
+                    <div class="filter-right">
+                        <div class="view-toggle">
+                            <button class="toggle-btn active">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                            <button class="toggle-btn">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resources-container">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading resources...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="logo">
+                        <span class="logo-icon">URH</span>
+                        <span class="logo-text">Universal Resource Hub</span>
+                    </div>
+                    <div class="about-us">
+                        <h3>About Us</h3>
+                        <p>Universal Resource Hub is your gateway to free educational resources. We're dedicated to making learning accessible to everyone by curating high-quality, free resources across various fields.</p>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <div class="contact-info">
+                        <p>Email: support@urh.com</p>
+                        <p>Phone: +1 (555) 123-4567</p>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="#">About Us</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2024 Universal Resource Hub. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Get category ID from URL
+        const categoryId = window.location.pathname.split('/').pop();
+        
+        // Function to load category and its resources
+        async function loadCategoryData() {
+            try {
+                const categoryInfo = document.getElementById('category-info');
+                const resourcesContainer = document.getElementById('resources-container');
+                
+                // Show loading state
+                categoryInfo.innerHTML = `
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading category...</p>
+                    </div>
+                `;
+                
+                resourcesContainer.innerHTML = `
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading resources...</p>
+                    </div>
+                `;
+                
+                // Fetch category data with its resources
+                const API_URL = `${window.location.origin}/api/categories/${categoryId}/resources`;
+                console.log('Fetching from:', API_URL);
+                
+                const response = await fetch(API_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`API returned ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Category data:', data);
+                
+                if (!data.category) {
+                    throw new Error('Category not found');
+                }
+                
+                // Update page title
+                document.title = `${data.category.name} Resources - Universal Resource Hub`;
+                
+                // Define font awesome icons for categories
+                const categoryIcons = {
+                    'Technology': 'fa-code',
+                    'Design': 'fa-paint-brush',
+                    'Business': 'fa-briefcase',
+                    'Education': 'fa-graduation-cap',
+                    'Books': 'fa-book',
+                    'Blogs & News': 'fa-newspaper',
+                    'Music': 'fa-music',
+                    'Science': 'fa-flask',
+                    'Art': 'fa-palette'
+                };
+                
+                const icon = categoryIcons[data.category.name] || 'fa-folder';
+                
+                // Populate category header
+                categoryInfo.innerHTML = `
+                    <div class="category-header-content">
+                        <div class="category-icon">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="category-details">
+                            <h1>${data.category.name}</h1>
+                            <p>${data.category.description || `Resources for ${data.category.name}`}</p>
+                        </div>
+                    </div>
+                `;
+                
+                // Populate resources
+                if (!data.resources || data.resources.length === 0) {
+                    resourcesContainer.innerHTML = `
+                        <div class="no-resources">
+                            <p>No resources found for this category. Check back later!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const resourcesHtml = data.resources.map(resource => {
+                    // Get tags if available
+                    let tagsHtml = '';
+                    if (resource.resource_tags && resource.resource_tags.length > 0) {
+                        tagsHtml = resource.resource_tags
+                            .map(tag => `<span class="tag">${tag.tag_name}</span>`)
+                            .join('');
+                    }
+                    
+                    return `
+                        <div class="resource-card">
+                            <div class="resource-image">
+                                <img src="${resource.image_url || 'https://via.placeholder.com/300x150?text=No+Image'}" alt="${resource.title}">
+                            </div>
+                            <div class="resource-content">
+                                <h3><a href="${resource.url}" target="_blank">${resource.title}</a></h3>
+                                <p>${resource.description || 'No description available'}</p>
+                                <div class="resource-meta">
+                                    <div class="rating">
+                                        <i class="fas fa-star"></i>
+                                        <span>${resource.rating || '0.0'}</span>
+                                    </div>
+                                    <div class="source">
+                                        <p>Source: ${resource.source || 'Unknown'}</p>
+                                        <p>Added: ${new Date(resource.created_at).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                                <div class="resource-tags">
+                                    ${tagsHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                resourcesContainer.innerHTML = `
+                    <div class="resources-grid">
+                        ${resourcesHtml}
+                    </div>
+                `;
+                
+                // Set up sort buttons
+                const sortButtons = document.querySelectorAll('.filter-btn[data-sort]');
+                sortButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        // Remove active class from all buttons
+                        sortButtons.forEach(btn => btn.classList.remove('active'));
+                        // Add active class to clicked button
+                        button.classList.add('active');
+                        
+                        // Sort resources based on the selected option
+                        const sortBy = button.dataset.sort;
+                        let sortedResources = [...data.resources];
+                        
+                        if (sortBy === 'newest') {
+                            sortedResources.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                        } else if (sortBy === 'popular') {
+                            // In a real app, you might have a "views" or "popularity" field
+                            // For now, we'll just use the rating as a proxy
+                            sortedResources.sort((a, b) => b.rating - a.rating);
+                        } else if (sortBy === 'rating') {
+                            sortedResources.sort((a, b) => b.rating - a.rating);
+                        }
+                        
+                        // Update the resources display
+                        const resourcesHtml = sortedResources.map(resource => {
+                            // Get tags if available
+                            let tagsHtml = '';
+                            if (resource.resource_tags && resource.resource_tags.length > 0) {
+                                tagsHtml = resource.resource_tags
+                                    .map(tag => `<span class="tag">${tag.tag_name}</span>`)
+                                    .join('');
+                            }
+                            
+                            return `
+                                <div class="resource-card">
+                                    <div class="resource-image">
+                                        <img src="${resource.image_url || 'https://via.placeholder.com/300x150?text=No+Image'}" alt="${resource.title}">
+                                    </div>
+                                    <div class="resource-content">
+                                        <h3><a href="${resource.url}" target="_blank">${resource.title}</a></h3>
+                                        <p>${resource.description || 'No description available'}</p>
+                                        <div class="resource-meta">
+                                            <div class="rating">
+                                                <i class="fas fa-star"></i>
+                                                <span>${resource.rating || '0.0'}</span>
+                                            </div>
+                                            <div class="source">
+                                                <p>Source: ${resource.source || 'Unknown'}</p>
+                                                <p>Added: ${new Date(resource.created_at).toLocaleDateString()}</p>
+                                            </div>
+                                        </div>
+                                        <div class="resource-tags">
+                                            ${tagsHtml}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                        
+                        document.querySelector('.resources-grid').innerHTML = resourcesHtml;
+                    });
+                });
+                
+                // Set up view toggle
+                const toggleButtons = document.querySelectorAll('.toggle-btn');
+                const resourcesGrid = document.querySelector('.resources-grid');
+                
+                toggleButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        toggleButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        
+                        // Toggle grid/list view
+                        if (button.querySelector('i').classList.contains('fa-list')) {
+                            resourcesGrid.classList.add('list-view');
+                        } else {
+                            resourcesGrid.classList.remove('list-view');
+                        }
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Error loading category data:', error);
+                
+                // Show error in category info
+                document.getElementById('category-info').innerHTML = `
+                    <div class="error-message">
+                        <p>Failed to load category: ${error.message}</p>
+                        <button onclick="loadCategoryData()" class="btn-small">Try Again</button>
+                    </div>
+                `;
+                
+                // Show error in resources container
+                document.getElementById('resources-container').innerHTML = `
+                    <div class="error-message">
+                        <p>Failed to load resources.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Check authentication status and update UI
+        function updateAuthUI() {
+            const authToken = localStorage.getItem('authToken');
+            const loginBtn = document.getElementById('loginBtn');
+            const dashboardBtn = document.getElementById('dashboardBtn');
+            
+            if (authToken) {
+                loginBtn.style.display = 'none';
+                dashboardBtn.style.display = 'inline-flex';
+            } else {
+                loginBtn.style.display = 'inline-flex';
+                dashboardBtn.style.display = 'none';
+            }
+        }
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategoryData();
+            updateAuthUI();
+            
+            // Theme toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                themeToggle.querySelector('i').classList.toggle('fa-moon');
+                themeToggle.querySelector('i').classList.toggle('fa-sun');
+            });
+        });
+    </script>
+</body>
+</html> 

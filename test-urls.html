@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource URL Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .resource {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .resource h3 {
+            margin-top: 0;
+        }
+        .url {
+            word-break: break-all;
+            font-family: monospace;
+            background-color: #f5f5f5;
+            padding: 5px;
+        }
+        .buttons {
+            margin-top: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .valid {
+            color: green;
+        }
+        .invalid {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Resource URL Tester</h1>
+    <div id="resources"></div>
+
+    <script>
+        // Function to validate URL
+        function isValidUrl(url) {
+            console.log('Validating URL:', url);
+            
+            if (!url || url === '#') {
+                console.error('URL is empty or "#"');
+                return false;
+            }
+            
+            try {
+                const urlObj = new URL(url);
+                const isValid = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+                console.log('URL validation result:', isValid, 'Protocol:', urlObj.protocol);
+                return isValid;
+            } catch (e) {
+                console.error('URL validation error:', e);
+                return false;
+            }
+        }
+
+        // Function to fetch resources
+        async function fetchResources() {
+            try {
+                const response = await fetch('/api/resources');
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                }
+                
+                const resources = await response.json();
+                displayResources(resources);
+            } catch (error) {
+                console.error('Error fetching resources:', error);
+                document.getElementById('resources').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+
+        // Function to display resources
+        function displayResources(resources) {
+            const container = document.getElementById('resources');
+            container.innerHTML = '';
+            
+            resources.forEach(resource => {
+                const isValid = isValidUrl(resource.url);
+                
+                const resourceElement = document.createElement('div');
+                resourceElement.className = 'resource';
+                resourceElement.innerHTML = `
+                    <h3>${resource.title}</h3>
+                    <p><strong>ID:</strong> ${resource.id}</p>
+                    <p><strong>URL:</strong> <span class="url ${isValid ? 'valid' : 'invalid'}">${resource.url || 'No URL'}</span></p>
+                    <p><strong>Source URL:</strong> <span class="url">${resource.source_url || 'No source_url'}</span></p>
+                    <p><strong>Valid:</strong> <span class="${isValid ? 'valid' : 'invalid'}">${isValid ? 'Yes' : 'No'}</span></p>
+                    <div class="buttons">
+                        <button onclick="testUrl('${resource.url}')">Test URL</button>
+                        <button onclick="fixUrl(${resource.id})">Fix URL</button>
+                    </div>
+                `;
+                
+                container.appendChild(resourceElement);
+            });
+        }
+
+        // Function to test a URL
+        function testUrl(url) {
+            if (!url || url === '#') {
+                alert('URL is empty or invalid');
+                return;
+            }
+            
+            window.open(url, '_blank');
+        }
+
+        // Function to fix a URL
+        async function fixUrl(id) {
+            try {
+                const response = await fetch(`/api/fix-resource-url/${id}`, { method: 'POST' });
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                alert(`URL fixed: ${result.url}`);
+                fetchResources(); // Refresh the list
+            } catch (error) {
+                console.error('Error fixing URL:', error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        // Load resources when page loads
+        document.addEventListener('DOMContentLoaded', fetchResources);
+    </script>
+</body>
+</html>

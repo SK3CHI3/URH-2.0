@@ -1,0 +1,41 @@
+[build]
+  functions = "netlify/functions"
+  publish = "."
+  command = "npm install"
+  ignore = "git diff --quiet HEAD^ HEAD -- '!netlify/'"
+
+[functions]
+  external_node_modules = ["@supabase/supabase-js"]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/public/*"
+  to = "/public/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[dev]
+  functions = "netlify/functions"
+  publish = "."
+  port = 3000 

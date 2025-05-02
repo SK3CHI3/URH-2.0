@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Resource Hub</title>
+    <link rel="icon" type="image/svg+xml" href="/public/images/favicon.svg">
+    <link rel="stylesheet" href="/public/css/styles.css?v=1.0.2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .tooltip-content {
+            visibility: hidden;
+            width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 15px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .tooltip-content::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        
+        .tooltip-container:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .tooltip-content h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .tooltip-content p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">U</div>
+                <span class="logo-text">Universal Resource Hub</span>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#">Categories</a></li>
+                <li><a href="#">Resources</a></li>
+            </ul>
+        </nav>
+        <div class="nav-icons">
+            <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+            <button id="notifications"><i class="fas fa-bell"></i></button>
+            <a href="login.html" class="login-btn">Login / Sign Up</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Find Free Resources to Learn, Create, and Innovate</h1>
+            <p>Discover thousands of free resources for technology, design, education, and more.</p>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="What are you looking for? (e.g., Free Python Course, Design Templates)">
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories">
+            <h2>Popular Categories</h2>
+            <p>Browse through our curated collection of free resources across various categories</p>
+            
+            <div class="category-grid">
+                <a href="#resources" class="category-card" onclick="filterByCategory('Technology')">
+                    <div class="category-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="resource-count">13</div>
+                    <h3>Technology</h3>
+                    <p>Programming tutorials, coding resources, and tech documentation</p>
+                </a>
+                <a href="#resources" class="category-card" onclick="filterByCategory('Design')">
+                    <div class="category-icon">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div class="resource-count">9</div>
+                    <h3>Design</h3>
+                    <p>UI kits, design templates, and creative assets</p>
+                </a>
+                <a href="#resources" class="category-card" onclick="filterByCategory('Business')">
+                    <div class="category-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="resource-count">5</div>
+                    <h3>Business</h3>
+                    <p>Business templates, guides, and entrepreneurship resources</p>
+                </a>
+                <a href="#resources" class="category-card" onclick="filterByCategory('Education')">
+                    <div class="category-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="resource-count">4</div>
+                    <h3>Education</h3>
+                    <p>Online courses, tutorials, and learning materials</p>
+                </a>
+                <a href="#resources" class="category-card" onclick="filterByCategory('Events')">
+                    <div class="category-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="resource-count">1</div>
+                    <h3>Events</h3>
+                    <p>Tech events, hackathons, and conferences from different regions</p>
+                </a>
+                <a href="#resources" class="category-card" onclick="filterByCategory('Blogs & News')">
+                    <div class="category-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div class="resource-count">3</div>
+                    <h3>Blogs & News</h3>
+                    <p>Latest tech news, industry insights, and expert blogs</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Resources Section -->
+        <section class="resources" id="resources">
+            <h2>Available Resources</h2>
+            
+            <div class="filter-container">
+                <div class="filter-left">
+                    <button class="filter-icon">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                    <div class="category-filters">
+                        <button class="filter-btn active">Featured</button>
+                        <button class="filter-btn">Technology</button>
+                        <button class="filter-btn">Design</button>
+                        <button class="filter-btn">Business</button>
+                        <button class="filter-btn">Education</button>
+                        <button class="filter-btn">Events</button>
+                        <button class="filter-btn">Blogs & News</button>
+                    </div>
+                </div>
+                <div class="filter-right">
+                    <div class="sort-dropdown">
+                        <button class="sort-btn">
+                            Trending
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="toggle-btn active">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button class="toggle-btn">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resources-grid">
+                <!-- Featured Resource Card 1 -->
+                <div class="resource-card">
+                    <div class="resource-image">
+                        <img src="https://images.unsplash.com/photo-1555066931-bf19f8fd1085" alt="Code on screen">
+                        <div class="featured-badge">
+                            <i class="fas fa-star"></i> Trending
+                        </div>
+                    </div>
+                    <div class="resource-content">
+                        <h3>freeCodeCamp - Full Stack Development</h3>
+                        <p>Learn web development with comprehensive courses covering HTML, CSS, JavaScript, and modern frameworks.</p>
+                        <div class="resource-meta">
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.9</span>
+                                <span class="views">50K+ learners</span>
+                            </div>
+                            <div class="source">
+                                <p>Source: freeCodeCamp</p>
+                                <p>Added: 20/02/2024</p>
+                            </div>
+                        </div>
+                        <div class="resource-tags">
+                            <span class="tag featured">Featured</span>
+                            <span class="tag">Programming</span>
+                            <span class="tag">Web Development</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Resource Card 2 -->
+                <div class="resource-card">
+                    <div class="resource-image">
+                        <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490" alt="UI Design">
+                        <div class="featured-badge">
+                            <i class="fas fa-star"></i> Popular
+                        </div>
+                    </div>
+                    <div class="resource-content">
+                        <h3>Figma UI Design Essentials</h3>
+                        <p>Master modern UI design principles with practical projects and real-world examples using Figma.</p>
+                        <div class="resource-meta">
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.8</span>
+                                <span class="views">35K+ designers</span>
+                            </div>
+                            <div class="source">
+                                <p>Source: Design Community</p>
+                                <p>Added: 19/02/2024</p>
+                            </div>
+                        </div>
+                        <div class="resource-tags">
+                            <span class="tag featured">Featured</span>
+                            <span class="tag">UI/UX</span>
+                            <span class="tag">Design</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Resource Card 3 -->
+                <div class="resource-card">
+                    <div class="resource-image">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3" alt="Business Strategy">
+                        <div class="featured-badge">
+                            <i class="fas fa-star"></i> New
+                        </div>
+                    </div>
+                    <div class="resource-content">
+                        <h3>Business Strategy Masterclass</h3>
+                        <p>Learn essential business strategies from industry experts. Perfect for entrepreneurs and business leaders.</p>
+                        <div class="resource-meta">
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span>4.9</span>
+                                <span class="views">25K+ enrolled</span>
+                            </div>
+                            <div class="source">
+                                <p>Source: Business Insights</p>
+                                <p>Added: 18/02/2024</p>
+                            </div>
+                        </div>
+                        <div class="resource-tags">
+                            <span class="tag featured">Featured</span>
+                            <span class="tag">Business</span>
+                            <span class="tag">Strategy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="logo">
+                        <span class="logo-icon">U</span>
+                        <span class="logo-text">Universal Resource Hub</span>
+                    </div>
+                    <div class="about-us">
+                        <h3>About Us</h3>
+                        <p>Universal Resource Hub is your gateway to free educational resources. We're dedicated to making learning accessible to everyone by curating high-quality, free resources across various fields. Our mission is to empower learners worldwide by breaking down barriers to education and professional development.</p>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-icons">
+                        <a href="https://github.com/SK3CHI3" target="_blank" aria-label="GitHub Profile"><i class="fab fa-github"></i></a>
+                        <a href="https://github.com/SK3CHI3/URH-RB" target="_blank" aria-label="GitHub Repository"><i class="fas fa-code-branch"></i></a>
+                        <a href="https://x.com/omollo_20" target="_blank" aria-label="X"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.linkedin.com/in/omollo-victor-28b942356" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <div class="contact-info">
+                        <p>Email: <a href="mailto:vomollo101@gmail.com">vomollo101@gmail.com</a></p>
+                        <p>Phone: <a href="tel:+254714525667">+254714525667</a></p>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <div class="footer-links">
+                        <div class="tooltip-container">
+                            <a href="#">Privacy Policy</a>
+                            <div class="tooltip-content">
+                                <h4>Privacy Policy</h4>
+                                <p>We collect personal information to provide and improve our services. We may collect your name, email address, and usage data. We do not sell your data to third parties. We use cookies to enhance your experience and analyze our traffic. You have the right to access, correct, or delete your data. For more information, please contact us.</p>
+                            </div>
+                        </div>
+                        <div class="tooltip-container">
+                            <a href="#">Terms of Service</a>
+                            <div class="tooltip-content">
+                                <h4>Terms of Service</h4>
+                                <p>By using our platform, you agree to these terms. You must be at least 13 years old to use our services. You are responsible for maintaining the confidentiality of your account. We reserve the right to terminate accounts that violate our policies. All content on this platform is for educational purposes only. We are not responsible for third-party content. These terms may be updated periodically.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; <script>document.write(new Date().getFullYear())</script> Universal Resource Hub. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load Supabase first -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Then load our config that initializes Supabase -->
+    <script src="public/js/config.js?v=1.0.2"></script>
+    
+    <!-- Then load our app scripts -->
+    <script src="public/js/resources.js?v=1.0.2"></script>
+    <script src="public/js/main.js?v=1.0.2"></script>
+    <script src="public/js/auth.js?v=1.0.2"></script>
+    
+    <!-- Add category filter script -->
+    <script>
+        function filterByCategory(category) {
+            // Find all filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            // Find the button that matches the category
+            let targetButton = null;
+            filterButtons.forEach(button => {
+                if (button.textContent.trim() === category) {
+                    targetButton = button;
+                }
+            });
+            
+            // If we found the button, simulate a click on it
+            if (targetButton) {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to the target button
+                targetButton.classList.add('active');
+                
+                // Trigger resource loading with the selected category
+                if (typeof loadResources === 'function') {
+                    loadResources(category);
+                } else {
+                    console.error('loadResources function not available');
+                }
+            } else {
+                console.error('Category button not found: ' + category);
+            }
+            
+            // Smooth scroll to resources section
+            document.getElementById('resources').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+    </script>
+
+    <!-- Core scripts -->
+    <script src="public/js/config.js"></script>
+    <!-- Image utilities for reliable loading -->
+    <script src="public/js/imageUtils.js"></script>
+    <!-- Main application scripts -->
+    <script src="public/js/resources.js"></script>
+    <script src="public/js/main.js"></script>
+    <script src="public/js/auth.js"></script>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://via.placeholder.com/400x200?text=Resource" as="image">
+</body>
+</html> 
