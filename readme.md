@@ -35,6 +35,15 @@ This is version 2.0 of the Universal Resource Hub, with improved scraping capabi
 
 ## 🚀 Getting Started
 
+### Automatic Resource Scraping
+
+The application includes automatic resource scraping that runs in two ways:
+
+1. **Scheduled Cron Jobs**: The scraper runs automatically at 12:00 AM and 12:00 PM daily when the server is running.
+2. **API Endpoint**: You can trigger the scraper manually by making a GET request to `/api/trigger-scrape?key=your_scraper_api_key`.
+
+For the automatic scraping to work properly, the server must be running continuously. If you're using a platform that doesn't support long-running processes, consider setting up an external cron service to trigger the scraper API endpoint.
+
 ### Prerequisites
 
 - Node.js (v14 or higher)
@@ -63,6 +72,7 @@ This is version 2.0 of the Universal Resource Hub, with improved scraping capabi
      SUPABASE_KEY=your_supabase_key
      NODE_ENV=development
      SCRAPFLY_API_KEY=your_scrapfly_api_key (optional)
+     SCRAPER_API_KEY=your_secure_api_key_for_triggering_scraper
      ```
 
 4. Start the server
@@ -135,6 +145,8 @@ See [CHANGELOG.md](CHANGELOG.md) for release history and updates.
 - Improved scraping reliability with Cheerio and Axios fallback
 - Added cache control headers to prevent caching issues
 - Added diagnostic tools for URL validation
+- Added secure API endpoint for triggering resource scraping
+- Improved automatic resource scraping with better error handling
 
 ## 📄 License
 

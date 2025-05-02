@@ -748,6 +748,40 @@ app.post('/api/fix-resource-url/:id', async (req, res) => {
   }
 });
 
+// Secure endpoint to trigger resource scraping
+app.get('/api/trigger-scrape', async (req, res) => {
+  try {
+    // Add a simple API key check for security
+    const apiKey = req.query.key;
+    if (!apiKey || apiKey !== process.env.SCRAPER_API_KEY) {
+      console.error('Unauthorized scraper trigger attempt');
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Import the scraper module
+    const { runScrapers } = require('./scraper');
+
+    // Run the scraper in the background
+    runScrapers()
+      .then(result => {
+        console.log('Scraper triggered via API:', result);
+      })
+      .catch(error => {
+        console.error('Error in scraper triggered via API:', error);
+      });
+
+    // Return immediately to avoid timeout
+    res.json({
+      success: true,
+      message: 'Scraper triggered successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error in trigger-scrape endpoint:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Emergency endpoint to fix all empty URLs
 app.get('/api/fix-all-urls', async (req, res) => {
   try {
